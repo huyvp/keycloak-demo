@@ -9,3 +9,8 @@ server:
   port: 9002
   servlet:
     context-path: /profile/
+
+idp:
+  url: http://localhost:8180
+  client-id: web_app
+  client-secret: AaMGYgpOLUdyQwIrCDkN9isidxvGYYg0
