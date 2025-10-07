@@ -1,0 +1,470 @@
+{
+	"info": {
+		"_postman_id": "5791d621-a310-4acd-ba87-fa2464b40968",
+		"name": "KEYCLOAK",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "24418910"
+	},
+	"item": [
+		{
+			"name": "Profile",
+			"item": [
+				{
+					"name": "registration",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"james\",\r\n    \"password\": \"12345678\",\r\n    \"email\": \"james@yopmail.com\",\r\n    \"firstName\": \"James\",\r\n    \"lastName\": \"Bond\",\r\n    \"dob\": \"2000-04-08\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{profile-host}}/profile/register",
+							"host": [
+								"{{profile-host}}"
+							],
+							"path": [
+								"profile",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getProfiles",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{keycloak-token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{profile-host}}/profile/profiles",
+							"host": [
+								"{{profile-host}}"
+							],
+							"path": [
+								"profile",
+								"profiles"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "admin",
+			"item": []
+		},
+		{
+			"name": "exchangeToken",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Set token to collection variable\", function() {",
+							"    var response = pm.response.json();",
+							"    pm.collectionVariables.set(\"keycloak-token\", response.access_token);",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "grant_type",
+							"value": "password",
+							"type": "text"
+						},
+						{
+							"key": "client_id",
+							"value": "web_app",
+							"type": "text"
+						},
+						{
+							"key": "client_secret",
+							"value": "AaMGYgpOLUdyQwIrCDkN9isidxvGYYg0",
+							"type": "text"
+						},
+						{
+							"key": "username",
+							"value": "james2",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "12345678",
+							"type": "text"
+						},
+						{
+							"key": "scope",
+							"value": "openid",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{keycloak-url}}/{{realm-name}}/protocol/openid-connect/token",
+					"host": [
+						"{{keycloak-url}}"
+					],
+					"path": [
+						"{{realm-name}}",
+						"protocol",
+						"openid-connect",
+						"token"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getUserInfo",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{keycloak-token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{keycloak-url}}/{{realm-name}}/protocol/openid-connect/userinfo",
+					"host": [
+						"{{keycloak-url}}"
+					],
+					"path": [
+						"{{realm-name}}",
+						"protocol",
+						"openid-connect",
+						"userinfo"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "exchangeClientToken",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Set token to collection variable\", function() {",
+							"    var response = pm.response.json();",
+							"    pm.collectionVariables.set(\"keycloak-client-token\", response.access_token);",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{keycloak-token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "grant_type",
+							"value": "client_credentials",
+							"type": "text"
+						},
+						{
+							"key": "client_id",
+							"value": "web_app",
+							"type": "text"
+						},
+						{
+							"key": "client_secret",
+							"value": "AaMGYgpOLUdyQwIrCDkN9isidxvGYYg0",
+							"type": "text"
+						},
+						{
+							"key": "scope",
+							"value": "openid",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{keycloak-url}}/{{realm-name}}/protocol/openid-connect/token",
+					"host": [
+						"{{keycloak-url}}"
+					],
+					"path": [
+						"{{realm-name}}",
+						"protocol",
+						"openid-connect",
+						"token"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "discoveryEndpoint",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{keycloak-token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{keycloak-url}}/{{realm-name}}/.well-known/openid-configuration",
+					"host": [
+						"{{keycloak-url}}"
+					],
+					"path": [
+						"{{realm-name}}",
+						".well-known",
+						"openid-configuration"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "createUser",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{keycloak-client-token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"johndoe\",\r\n    \"enabled\": true,\r\n    \"email\": \"johndoe@yopmail.com\",\r\n    \"emailVerified\": true,\r\n    \"firstName\": \"John\",\r\n    \"lastName\": \"Doe\",\r\n    \"credentials\": [\r\n        {\r\n            \"type\": \"password\",\r\n            \"value\": \"12345678\",\r\n            \"temporary\": false\r\n        }\r\n    ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{keycloak-admin-url}}/{{realm-name}}/users",
+					"host": [
+						"{{keycloak-admin-url}}"
+					],
+					"path": [
+						"{{realm-name}}",
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getUsers",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{keycloak-client-token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{keycloak-admin-url}}/{{realm-name}}/users?exact=false",
+					"host": [
+						"{{keycloak-admin-url}}"
+					],
+					"path": [
+						"{{realm-name}}",
+						"users"
+					],
+					"query": [
+						{
+							"key": "exact",
+							"value": "false"
+						},
+						{
+							"key": "email",
+							"value": "john",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getUsersCredential",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{keycloak-client-token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{keycloak-admin-url}}/{{realm-name}}/users/c5c8a1ca-2c71-4f04-abd2-f237f310e5ad/credentials",
+					"host": [
+						"{{keycloak-admin-url}}"
+					],
+					"path": [
+						"{{realm-name}}",
+						"users",
+						"c5c8a1ca-2c71-4f04-abd2-f237f310e5ad",
+						"credentials"
+					],
+					"query": [
+						{
+							"key": "email",
+							"value": "john",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "deleteUser",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{keycloak-client-token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{keycloak-admin-url}}/{{realm-name}}/users/8e7c2389-68d9-47fc-8453-dc5d0a1e9ed0",
+					"host": [
+						"{{keycloak-admin-url}}"
+					],
+					"path": [
+						"{{realm-name}}",
+						"users",
+						"8e7c2389-68d9-47fc-8453-dc5d0a1e9ed0"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "keycloak-url",
+			"value": "http://localhost:8180/realms"
+		},
+		{
+			"key": "realm-name",
+			"value": "web-app"
+		},
+		{
+			"key": "keycloak-token",
+			"value": "eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJpaTJiWVVnMlJNQjR4SkQtMlJPZDBmUGFaTmdtSE9BemktU3FfdWNpRmFjIn0.eyJleHAiOjE3NTgxMjUyNzksImlhdCI6MTc1ODEyNDk3OSwianRpIjoiZGQ2ZTcwMWMtMzZlYS00MDUxLTg0NmQtNDM5ZTg4MmFjMjJlIiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MTgwL3JlYWxtcy93ZWItYXBwIiwiYXVkIjoiYWNjb3VudCIsInN1YiI6IjkyN2I3M2Q4LTU3ZTUtNDhiYi1iODJiLTEyNGQ0ZTEyMTgyNyIsInR5cCI6IkJlYXJlciIsImF6cCI6IndlYl9hcHAiLCJzaWQiOiJkOTAzYThjYS1kYjM4LTRkZTYtYmVlOS05OGVkNGVlMjdjYzgiLCJhY3IiOiIxIiwiYWxsb3dlZC1vcmlnaW5zIjpbIioiXSwicmVhbG1fYWNjZXNzIjp7InJvbGVzIjpbImRlZmF1bHQtcm9sZXMtd2ViLWFwcCIsIm9mZmxpbmVfYWNjZXNzIiwidW1hX2F1dGhvcml6YXRpb24iXX0sInJlc291cmNlX2FjY2VzcyI6eyJhY2NvdW50Ijp7InJvbGVzIjpbIm1hbmFnZS1hY2NvdW50IiwibWFuYWdlLWFjY291bnQtbGlua3MiLCJ2aWV3LXByb2ZpbGUiXX19LCJzY29wZSI6Im9wZW5pZCBwcm9maWxlIGVtYWlsIiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJuYW1lIjoiTkdVWUVOIFZBTiBIVVkiLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJodXl2cCIsImdpdmVuX25hbWUiOiJOR1VZRU4iLCJmYW1pbHlfbmFtZSI6IlZBTiBIVVkiLCJlbWFpbCI6Im52aDE4OTJrd0BnbWFpbC5jb20ifQ.iHS1mYqQl216p4aAvLrp9LIY9CF22vOzJwwaf0WLBRnHHGx3mwrVweZ600r0hsesveJ5HYS-BmQr5VXqducKlycZgP6WEomK6LmbDuqOWEhgZgNcXPG5oXMRfz-BiCwH0tx1QJtTnHa35WUHOVWd0JhF23vMrnGpnjSGoPNFXSQWDEgZeg4QkcJAx4_0I3KRMvxAmyOk9VXQNP5lKj-G-C24xEW5JpunLhzg3qIzKYGNQj_oZo8Mv-jmvo-cY3TL1a6QnjWaEQiXMR57PNfpf0IMjJ-QLvK7FBTRRT_aZI-aohTrdniTPKz3mRs0SJ5Nd_-ADbqjzSGITNzz1GUyhw"
+		},
+		{
+			"key": "keycloak-admin-url",
+			"value": "http://localhost:8180/admin/realms"
+		},
+		{
+			"key": "keycloak-client-token",
+			"value": "eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJpaTJiWVVnMlJNQjR4SkQtMlJPZDBmUGFaTmdtSE9BemktU3FfdWNpRmFjIn0.eyJleHAiOjE3NTgxMjYzMzAsImlhdCI6MTc1ODEyNjAzMCwianRpIjoiODM4M2ZlNWItMGNkMy00MDQ3LWI2M2MtNTljMzRjMDFiZTNkIiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MTgwL3JlYWxtcy93ZWItYXBwIiwiYXVkIjpbInJlYWxtLW1hbmFnZW1lbnQiLCJhY2NvdW50Il0sInN1YiI6IjdkZGZkMzMyLWY4YWMtNGU5Ni1hYjM5LWVjOTBmMGJmM2FkMSIsInR5cCI6IkJlYXJlciIsImF6cCI6IndlYl9hcHAiLCJhY3IiOiIxIiwiYWxsb3dlZC1vcmlnaW5zIjpbIioiXSwicmVhbG1fYWNjZXNzIjp7InJvbGVzIjpbImRlZmF1bHQtcm9sZXMtd2ViLWFwcCIsIm9mZmxpbmVfYWNjZXNzIiwidW1hX2F1dGhvcml6YXRpb24iXX0sInJlc291cmNlX2FjY2VzcyI6eyJyZWFsbS1tYW5hZ2VtZW50Ijp7InJvbGVzIjpbIm1hbmFnZS11c2VycyJdfSwiYWNjb3VudCI6eyJyb2xlcyI6WyJtYW5hZ2UtYWNjb3VudCIsIm1hbmFnZS1hY2NvdW50LWxpbmtzIiwidmlldy1wcm9maWxlIl19fSwic2NvcGUiOiJvcGVuaWQgcHJvZmlsZSBlbWFpbCIsImVtYWlsX3ZlcmlmaWVkIjpmYWxzZSwiY2xpZW50SG9zdCI6IjE3Mi4xNy4wLjEiLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJzZXJ2aWNlLWFjY291bnQtd2ViX2FwcCIsImNsaWVudEFkZHJlc3MiOiIxNzIuMTcuMC4xIiwiY2xpZW50X2lkIjoid2ViX2FwcCJ9.b3WZQpnByo4t-HTMWY_3M9ACeeBu_5As3gTZ9rmQTJM_D90NKMyB6tKUa9i5sGH_u8u74xzjoCRsfoVP5ZZGaMFBJLSJzN_51xFIAPqrvHbEiTc3tchtLnZuRiUBpI42iKc5nZeyZL62XTMo__fffo_t_7RXHE8wNKPUg7Toe4p8YJU1Cs7fYK07KsX8540jQ3woZ0dhO62NjUENIP5CVqkIKgcTrfIOZ7AvbKBi2p7W9-850OU0SIrFEi7ekjaYjWSsnGpr2Y39q8wPtb6sI9m6tVTx6FDanA-aXSM2bXcY_2FhHruUj0Pov7iuSL5QJ-ehv1mHtfwVmUtbsOLWWQ"
+		},
+		{
+			"key": "profile-host",
+			"value": "http://localhost:9002"
+		}
+	]
+}

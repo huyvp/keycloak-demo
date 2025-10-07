@@ -1,6 +1,7 @@
 package com.profile.controller;
 
 import com.profile.dto.request.RegistrationRequest;
+import com.profile.dto.response.CommonResponse;
 import com.profile.dto.response.ProfileResponse;
 import com.profile.service.IProfileService;
 import lombok.AccessLevel;
@@ -19,18 +20,24 @@ public class ProfileController {
     IProfileService profileService;
 
     @PostMapping("/register")
-    ProfileResponse register(@RequestBody RegistrationRequest request) {
+    CommonResponse<ProfileResponse> register(@RequestBody RegistrationRequest request) {
         log.info("Creating user profile : {}", request);
-        return profileService.createProfile(request);
+        return CommonResponse.<ProfileResponse>builder()
+                .result(profileService.createProfile(request))
+                .build();
     }
 
     @GetMapping("/{id}")
-    ProfileResponse getUserProfile(@PathVariable("id") String id) {
-        return profileService.getProfile(id);
+    CommonResponse<ProfileResponse>  getUserProfile(@PathVariable("id") String id) {
+        return CommonResponse.<ProfileResponse>builder()
+                .result(profileService.getProfile(id))
+                .build();
     }
 
     @GetMapping("/profiles")
-    List<ProfileResponse> getUserProfiles() {
-        return profileService.getProfiles();
+    CommonResponse<List<ProfileResponse>> getUserProfiles() {
+        return CommonResponse.<List<ProfileResponse>>builder()
+                .result(profileService.getProfiles())
+                .build();
     }
 }

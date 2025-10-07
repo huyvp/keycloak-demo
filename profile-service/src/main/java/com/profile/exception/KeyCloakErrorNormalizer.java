@@ -26,6 +26,7 @@ public class KeyCloakErrorNormalizer {
     }
 
     public ServiceException handleException(FeignException exception) {
+        log.error("Exception: {}", exception.getMessage());
         try {
             var error = objectMapper.readValue(exception.contentUTF8(), KeyCloakError.class);
             log.info(error.getErrorMessage());

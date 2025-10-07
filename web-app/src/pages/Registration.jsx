@@ -1,5 +1,6 @@
 import { Alert, Box, Button, Card, CardContent, Snackbar, TextField, Typography } from '@mui/material'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { apiClient } from '../configurations/httpClient';
 
 export default function Registration() {
     const [username, setUsername] = useState("");
@@ -26,11 +27,23 @@ export default function Registration() {
             email: email,
         }
 
-        // const response = fetch(
-        //     'http://localhost:8080/profile',
-        //     payload)
-        //     .then()
+        const data = apiClient.post('/profile/register', payload);
+
+        if (data.code === 1000) {
+            setSnackSeverity("success");
+            setSnackBarMessage("Registration completed successfully!");
+            setSnackBarOpen(true);
+        } else {
+            setSnackSeverity("error");
+            setSnackBarMessage(data.message);
+            setSnackBarOpen(true);
+            return;
+        }
     }
+
+    useEffect(() => {
+        window.document.title = 'Sign Up'
+    }, [])
 
     return (
         <>
@@ -42,11 +55,11 @@ export default function Registration() {
             >
                 <Alert
                     onClose={handleCloseSnackBar}
-                    security={snackSeverity}
+                    severity={snackSeverity}
                     variant='filled'
                     sx={{ width: "100%" }}
                 >
-                    {setSnackBarMessage}
+                    {snackBarMessage}
                 </Alert>
             </Snackbar>
             <Box
@@ -55,7 +68,7 @@ export default function Registration() {
                 alignItems="center"
                 justifyContent="center"
                 height="100vh"
-                bgcolor="#f0f2f5"
+                bgcolor={"#f0f2f5"}
             >
                 <Card
                     sx={{
