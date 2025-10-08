@@ -18,6 +18,7 @@ import lombok.experimental.NonFinal;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -93,8 +94,12 @@ public class ProfileService implements IProfileService {
     }
 
     @Override
-    public ProfileResponse getProfile(String id) {
-        var profile = profileRepo.findById(id).orElse(null);
+    public ProfileResponse getMyProfile() {
+        var authentication =  SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+        log.info("username : {}", username);
+        var profile = profileRepo.findByUserId(username).orElse(null);
+        log.info("profile : {}", profile);
         return profileMapper.toProfileResponse(profile);
     }
 

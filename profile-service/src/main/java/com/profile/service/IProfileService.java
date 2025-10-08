@@ -8,7 +8,7 @@ import java.util.List;
 public interface IProfileService {
     ProfileResponse createProfile(RegistrationRequest request);
 
-    ProfileResponse getProfile(String id);
+    ProfileResponse getMyProfile();
 
     List<ProfileResponse> getProfiles();
 }

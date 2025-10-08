@@ -1,8 +1,10 @@
-import { Alert, Snackbar } from '@mui/material'
+import { Alert, Snackbar, Card, Box, Typography } from '@mui/material'
 import { useEffect, useState } from 'react'
 import Scene from './Scene';
 import { apiClient } from '../configurations/httpClient';
 import LineItem from '../components/LineItem';
+import keycloak from '../configurations/keycloak';
+
 export default function Home() {
 
     const [snackBarOpen, setSnackBarOpen] = useState(false);
@@ -16,12 +18,14 @@ export default function Home() {
         setSnackBarOpen(true);
     }
 
-    const getProfile = () => {
-        const response = apiClient.get('/my-profile')
-        if (response.code === 1000) setProfile(response.result)
+    const getProfile = async () => {
+        const data = await apiClient.get('/profile/my-profile')
+        console.log(data);
+
+        if (data.code === 1000) setProfile(data.result)
         else {
             setSnackSeverity("error");
-            setSnackBarMessage(response?.message ?? "Get Profile is failed");
+            setSnackBarMessage(data?.message ?? "Get Profile is failed");
             setSnackBarOpen(true);
         }
     }
@@ -30,6 +34,8 @@ export default function Home() {
         window.document.title = 'Home';
         getProfile();
     }, [])
+
+    console.log("AccessToken:", keycloak.token);
 
     return (
         <>

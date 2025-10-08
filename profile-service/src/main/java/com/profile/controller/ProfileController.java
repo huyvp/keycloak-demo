@@ -27,10 +27,10 @@ public class ProfileController {
                 .build();
     }
 
-    @GetMapping("/{id}")
-    CommonResponse<ProfileResponse>  getUserProfile(@PathVariable("id") String id) {
+    @GetMapping("/my-profile")
+    CommonResponse<ProfileResponse>  getMyProfile() {
         return CommonResponse.<ProfileResponse>builder()
-                .result(profileService.getProfile(id))
+                .result(profileService.getMyProfile())
                 .build();
     }
 

@@ -1,7 +1,9 @@
+import keycloak from "./keycloak";
+
 export const BASE_URL = "http://localhost:9002";
 
 async function request(method, url, data = null, customHeaders = {}) {
-    const token = localStorage.getItem("token");
+    const token = keycloak.token;
 
     const headers = {
         "Content-Type": "application/json",
