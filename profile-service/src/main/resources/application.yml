@@ -19,3 +19,10 @@ idp:
   url: http://localhost:8180
   client-id: web_app
   client-secret: AaMGYgpOLUdyQwIrCDkN9isidxvGYYg0
+
+
+logging:
+  level:
+    org.springframework.security: debug
+    org.springframework.security.web.access.ExceptionTranslationFilter: TRACE
+    org.springframework.security.web.access.AccessDeniedHandlerImpl: TRACE

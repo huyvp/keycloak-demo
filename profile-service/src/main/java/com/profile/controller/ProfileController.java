@@ -8,7 +8,10 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
@@ -28,7 +31,7 @@ public class ProfileController {
     }
 
     @GetMapping("/my-profile")
-    CommonResponse<ProfileResponse>  getMyProfile() {
+    CommonResponse<ProfileResponse> getMyProfile() {
         return CommonResponse.<ProfileResponse>builder()
                 .result(profileService.getMyProfile())
                 .build();
@@ -36,6 +39,7 @@ public class ProfileController {
 
     @GetMapping("/profiles")
     CommonResponse<List<ProfileResponse>> getUserProfiles() {
+        log.info("Access controller getUserProfiles");
         return CommonResponse.<List<ProfileResponse>>builder()
                 .result(profileService.getProfiles())
                 .build();
